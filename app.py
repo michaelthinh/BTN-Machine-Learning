@@ -127,15 +127,25 @@ app.layout = html.Div(
     # footer
     html.Div(
             children=[
-                html.P('Các thành viên:'),
+                html.Img(src='https://inkythuatso.com/uploads/images/2021/12/logo-khoa-hoc-tu-nhien-inkythuatso-01-25-16-11-19.jpg', style={'width': '160px', 'height': '160px', 'borderRadius': '50%'}),
                 html.Div(
                     children=[
-                        html.Div('Mai Cường Thịnh'),
-                        html.Div('Nguyễn Hữu Thiện'),
-                        html.Div('Ngô Nguyễn Quang Tú'),
-                        html.Div('Lưu Tuấn Khanh'),
+                        html.P('Các thành viên:'),
+                        html.Div(
+                            children=[
+                                html.Div('Mai Cường Thịnh'),
+                                html.Div('Nguyễn Hữu Thiện'),
+                                html.Div('Ngô Nguyễn Quang Tú'),
+                                html.Div('Lưu Tuấn Khanh'),
+                            ]
+                        ),
+                        html.Div(
+                            children=[
+                                html.P('© 2024, Nhóm 04, Các công nghệ mới trong phát triển phần mềm - CQ2020/3'),
+                            ]
+                        ),
                     ]
-                )
+                ),
             ],
             className='footer',
         ),
