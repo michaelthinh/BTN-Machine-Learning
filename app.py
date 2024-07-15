@@ -20,7 +20,7 @@ app.layout = html.Div(
     #header
     html.Div(
               children=[
-                html.Span("Đồ án nhóm cuối kì ứng dụng Machine Learning"),
+                html.Span("BTN - MachineLearning"),
                 html.Span("Nhóm 04")
               ],
               className='header',
@@ -33,23 +33,35 @@ app.layout = html.Div(
         },
         children=[
             html.Div(
-                style={"display": "flex", "gap": "20px", "align-items": "center"},
+                style={},
+                # style={"display": "flex", "gap": "20px", "align-items": "center"},
                 children=[
-                    dcc.Dropdown(
-                        id="coin-dropdown",
-                        options=coin_labels,
-                        value=coin_labels[0]['value'],
-                        clearable=False,
-                        style={"width": "200px"},
+                    html.Div(
+                        style={},
+                        children=[
+                            html.H5("Cặp tiền dự đoán:"),
+                            dcc.Dropdown(
+                            id="coin-dropdown",
+                            options=coin_labels,
+                            value=coin_labels[0]['value'],
+                            clearable=False,
+                            style={"width": "200px"},
+                        ),]
                     ),
-                    dcc.Dropdown(
-                        id="algorithm-dropdown",
-                        options=algorithms,
-                        value=algorithms[0]['value'],
-                        clearable=False,
-                        style={"width": "200px"},
+                    html.Div(
+                        style={},
+                        children=[
+                            html.H5("Phương pháp dự đoán"),
+                            dcc.Dropdown(
+                                id="algorithm-dropdown",
+                                options=algorithms,
+                                value=algorithms[0]['value'],
+                                clearable=False,
+                                style={"width": "200px"},
+                            ),
+                        ],
                     ),
-                    html.H5("Timeframe:", style={"marginLeft": "20px"}),
+                    html.H5("Timeframe:", style={}),
                     dcc.Dropdown(
                         id="timeframe",
                         options=list(timeframes.values()),
@@ -57,7 +69,7 @@ app.layout = html.Div(
                         clearable=False,
                         style={"width": "200px"},
                     ),
-                    html.H5("Number of timeframe:", style={"marginLeft": "20px"}),
+                    html.H5("Số lượng timeframe:", style={}),
                     dcc.Dropdown(
                         id="day-number",
                         options=day_number,
@@ -67,13 +79,14 @@ app.layout = html.Div(
                     ),
                 ],
             ),
+            html.H5("Các đặc trưng dự đoán:", style={}),
             dcc.Dropdown(
                 placeholder="Select attributes",
                 multi=True,
                 id="feature-dropdown",
                 options=[
                     {"label": "Close Price", "value": "close"},
-                    {"label": "ROC", "value": "ROC"},
+                    {"label": "ROC", "value": "ROC"}
                 ],
                 value=["close", "ROC"],
                 clearable=False,
@@ -86,13 +99,19 @@ app.layout = html.Div(
         style={"display": "flex", "alignItems":"center"},
         children=[
             html.H1(
-                "Trading Price Analysis Dashboard",
+                "Bảng phân tích giá trading",
                 style={"textAlign": "left", "margin": "20px"},
             ),
             # Loading process
-            dcc.Loading(id='loading-indicator', type='default', children=[
-                html.Div(id='loading-placeholder', style={"textAlign": "center"})
-            ]),
+            dcc.Loading(
+                style={"marginLeft": "25px"},
+                id="loading-spinner",
+                type="circle",
+                color="#888",
+                children=[
+                    html.Div(id="loading-placeholder", style={"textAlign": "center"})
+                ],
+            ),
         ]
     ),
     # Graph presentation
@@ -146,7 +165,15 @@ def update_loading_state(coin, algorithm, features, day_number, timeframe, n_int
     input_id = ctx.triggered[0]['prop_id'].split('.')[0]
 
     if input_id in ["coin-dropdown", "algorithm-dropdown", "feature-dropdown", "day-number", "timeframe"]:
-        return 'Loading...'
+        return dcc.Loading(
+            style={"marginLeft": "25px"},
+            id="loading-spinner",
+            type="circle",
+            color="#888",
+            children=[
+                html.Div(id="loading-placeholder", style={"textAlign": "center"})
+            ],
+        ),
     elif input_id == 'hide-loading-interval' and n_intervals > 0:
         return ''
 
@@ -166,6 +193,16 @@ def start_loading_interval(coin, algorithm, features, day_number, timeframe):
     return 0
 
 @app.callback(
+    Output("feature-dropdown", "value"),
+    [Input("feature-dropdown", "value")],
+    [State("feature-dropdown", "options")]
+)
+def validate_feature_selection(features, options):
+    if not features:
+        return [options[0]["value"]]
+    return features
+
+@app.callback(
     Output("candlestick-graph", "figure"),
     [
         Input("coin-dropdown", "value"),
@@ -176,6 +213,7 @@ def start_loading_interval(coin, algorithm, features, day_number, timeframe):
         Input("interval-component", "n_intervals")
     ]
 )
+
 def update_trading_price_graph(coin, algorithm, features, day_number, timeframe, n_intervals):
     df = getDataFromCoin(coin, timeframe, day_number)
     figure = go.Figure(
@@ -215,8 +253,8 @@ def addPredictCandle(figure, date, candel_df: pd.DataFrame):
         high=candel_df["high"],
         low=candel_df["low"],
         close=candel_df["close"],
-        increasing=dict(line=dict(color="blue")),
-        decreasing=dict(line=dict(color="#3C3B6E")),
+        increasing=dict(line=dict(color="#408EC6")),
+        decreasing=dict(line=dict(color="#7A2048")),
         name="Predicted Trading Price",
     )
     figure.add_trace(new_candle)
