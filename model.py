@@ -8,7 +8,7 @@ from model.factory import ModelPredictServiceFactory
 
 # from sklearn.metrics import mean_squared_error
 
-# ModelsInitializer().init()
+ModelsInitializer().init()
 features = features
 coin = coins[0]
 trainDataProvider = TrainDataProvider(

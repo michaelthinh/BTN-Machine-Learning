@@ -43,7 +43,7 @@ app.layout = html.Div(
                             dcc.Dropdown(
                             id="coin-dropdown",
                             options=coin_labels,
-                            value=coin_labels[0]['value'],
+                            value=coin_labels[0]["value"],
                             clearable=False,
                             style={"width": "200px"},
                         ),]
@@ -55,7 +55,7 @@ app.layout = html.Div(
                             dcc.Dropdown(
                                 id="algorithm-dropdown",
                                 options=algorithms,
-                                value=algorithms[0]['value'],
+                                value=algorithms[0]["value"],
                                 clearable=False,
                                 style={"width": "200px"},
                             ),
@@ -65,7 +65,7 @@ app.layout = html.Div(
                     dcc.Dropdown(
                         id="timeframe",
                         options=list(timeframes.values()),
-                        value=list(timeframes.values())[0]['value'],
+                        value=list(timeframes.values())[0]["value"],
                         clearable=False,
                         style={"width": "200px"},
                     ),
@@ -123,7 +123,8 @@ app.layout = html.Div(
         ],
         style={"border": "solid 1px gray", "marginTop": "10px"},
     ),
-    
+    dcc.Interval(id="interval-component", interval=2 * 1000, n_intervals=0),
+    dcc.Interval(id='hide-loading-interval', interval=1* 1000, n_intervals=0, max_intervals=1),
     # footer
     html.Div(
             children=[
@@ -149,30 +150,29 @@ app.layout = html.Div(
             ],
             className='footer',
         ),
-    dcc.Interval(id="interval-component", interval=2 * 1000, n_intervals=0),
-    dcc.Interval(id='hide-loading-interval', interval=1* 1000, n_intervals=0, max_intervals=1)
+    
 ])
 
 # TRADING PRICE
 @app.callback(
-    Output('loading-placeholder', 'children'),
+    Output("loading-placeholder", "children"),
     [
         Input("coin-dropdown", "value"),
         Input("algorithm-dropdown", "value"),
         Input("feature-dropdown", "value"),
         Input("day-number", "value"),
         Input("timeframe", "value"),
-        Input('hide-loading-interval', 'n_intervals')
+        Input("hide-loading-interval", "n_intervals")
     ],
-    [State('loading-placeholder', 'children')]
+    [State("loading-placeholder", "children")]
 )
 def update_loading_state(coin, algorithm, features, day_number, timeframe, n_intervals, current_state):
     ctx = dash.callback_context
 
     if not ctx.triggered:
-        return ''
+        return ""
 
-    input_id = ctx.triggered[0]['prop_id'].split('.')[0]
+    input_id = ctx.triggered[0]["prop_id"].split(".")[0]
 
     if input_id in ["coin-dropdown", "algorithm-dropdown", "feature-dropdown", "day-number", "timeframe"]:
         return dcc.Loading(
@@ -185,18 +185,18 @@ def update_loading_state(coin, algorithm, features, day_number, timeframe, n_int
             ],
         ),
     elif input_id == 'hide-loading-interval' and n_intervals > 0:
-        return ''
+        return ""
 
     return current_state
 
 @app.callback(
-    Output('hide-loading-interval', 'n_intervals'),
+    Output("hide-loading-interval", "n_intervals"),
     [
         Input("coin-dropdown", "value"),
         Input("algorithm-dropdown", "value"),
         Input("feature-dropdown", "value"),
         Input("day-number", "value"),
-        Input("timeframe", "value")
+        Input("timeframe", "value"),
     ]
 )
 def start_loading_interval(coin, algorithm, features, day_number, timeframe):
@@ -205,7 +205,7 @@ def start_loading_interval(coin, algorithm, features, day_number, timeframe):
 @app.callback(
     Output("feature-dropdown", "value"),
     [Input("feature-dropdown", "value")],
-    [State("feature-dropdown", "options")]
+    [State("feature-dropdown", "options")],
 )
 def validate_feature_selection(features, options):
     if not features:
@@ -220,7 +220,7 @@ def validate_feature_selection(features, options):
         Input("feature-dropdown", "value"),
         Input("day-number", "value"),
         Input("timeframe", "value"),
-        Input("interval-component", "n_intervals")
+        Input("interval-component", "n_intervals"),
     ]
 )
 
@@ -234,13 +234,17 @@ def update_trading_price_graph(coin, algorithm, features, day_number, timeframe,
                 high=df.high,
                 low=df.low,
                 close=df.close,
-                name='Trading Price'
+                name="Giá trao đổi"
             )
         ]
     )
-
-    if timeframe == timeframes["day"]["value"] and day_number >= windowSize:
-        df['ROC'] = ROCCalculator().fromClose(df['close'])
+    isPredictable = (
+        timeframe == timeframes["day"]["value"]
+        and day_number >= windowSize
+        and len(features) > 0
+    )
+    if isPredictable:
+        df["ROC"] = ROCCalculator().fromClose(df["close"])
         predictService = ModelPredictServiceFactory.getModelPredictService(
             modelName=algorithm, features=features, coin=coin
         )
