@@ -11,19 +11,19 @@ Các thành viên:
 
 Xây dựng trang DashBoard phân tích trading theo các tiêu chí sau
 
-1. Người dùng chọn một trong các phương pháp dự đoán :
-   a. XGBoost, RNN, LSTM (bắt buộc) hoặc các phương pháp khác.
+1. Người dùng chọn một trong các phương pháp dự đoán :  
+   a. XGBoost, RNN, LSTM (bắt buộc) hoặc các phương pháp khác.  
    b. Transformer and Time Embeddings(nâng cao - có thể làm hoặc không, có điểm cộng)
-2. Người dùng chọn một hay nhiều đặc trưng để dự đoán :
-   a. Close, ROC (bắt buộc)
-   b. RSI, Bolling Bands, Moving Average,...(nâng cao)
+2. Người dùng chọn một hay nhiều đặc trưng để dự đoán :  
+   a. Close, ROC (bắt buộc)  
+   b. RSI, Bolling Bands, Moving Average,...(nâng cao)  
    c. Đường hỗ trợ/kháng cự (nâng cao)
 3. Hiển thị giá dự đoán của timeframe kế tiếp (visualize)
-4. Lấy dữ liệu Real-time từ websocket của Binance, chứng khoán,...
-   a. Lấy dữ liệu lớn hơn 1000 nến(candle) từ lịch sử
-   b. Lấy dữ liệu real-time append vô dữ liệu hiện tại
-   c. Dự đoán giá nến(candle) kế tiếp
-   Xây dựng DashBoard theo tutorial sau : **[Stock Price Prediction – Machine Learning Project in Python](https://data-flair.training/blogs/stock-price-prediction-machine-learning-project-in-python/)**
+4. Lấy dữ liệu Real-time từ websocket của Binance, chứng khoán,...  
+   a. Lấy dữ liệu lớn hơn 1000 nến(candle) từ lịch sử  
+   b. Lấy dữ liệu real-time append vô dữ liệu hiện tại  
+   c. Dự đoán giá nến(candle) kế tiếp  
+   Xây dựng DashBoard theo tutorial sau : **[Stock Price Prediction – Machine Learning Project in Python](https://data-flair.training/blogs/stock-price-prediction-machine-learning-project-in-python/)**  
    Tiêu chí chấm : Hỗ trợ càng nhiều mô hình dự đoán(Kết hợp phương pháp và các đặc trưng) càng tốt, giao diện đẹp, tiện dụng, dễ xài.
 
 ## Cách cài đặt dự án
